@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using Faro_Shuffle;
 // See https://aka.ms/new-console-template for more information
 /**
  * <summary>This console program implements the Faro Shuffle technique (shuffling cards)</summary>
@@ -64,6 +65,15 @@ foreach (var card in top)
 
 Console.WriteLine("bottom");
 foreach (var card in bottom)
+{
+    Console.WriteLine(card);
+}
+
+var shuffle = top.InterLeaveSequenceWith(bottom);
+
+Console.WriteLine("shuffle");
+
+foreach (var card in shuffle)
 {
     Console.WriteLine(card);
 }
