@@ -6,6 +6,7 @@ using Faro_Shuffle;
 /**
  * <summary>This console program implements the Faro Shuffle technique (shuffling cards)</summary>
  */
+
 var startingDeck = from s in Suits()
                    from r in Ranks()
                    select new { Suit = s, Rank = r };
@@ -56,7 +57,9 @@ static IEnumerable<string> Ranks()
  */
 var top = startingDeck.Take(26); // only include the first 26 of the starting Deck
 var bottom = startingDeck.Skip(26); // .... last ....
+var shuffle = top.InterLeaveSequenceWith(bottom);
 
+/*
 Console.WriteLine("top");
 foreach (var card in top)
 {
@@ -69,7 +72,6 @@ foreach (var card in bottom)
     Console.WriteLine(card);
 }
 
-var shuffle = top.InterLeaveSequenceWith(bottom);
 
 Console.WriteLine("shuffle");
 
@@ -77,3 +79,21 @@ foreach (var card in shuffle)
 {
     Console.WriteLine(card);
 }
+*/
+
+var times = 0;
+shuffle = startingDeck;
+do
+{ 
+    top = shuffle.Take(26);
+    bottom = shuffle.Skip(26);
+    shuffle = top.InterLeaveSequenceWith(bottom);
+    foreach (var card in shuffle) 
+    {
+        Console.WriteLine(card);
+    }
+    Console.WriteLine();
+    times ++;
+} while (!startingDeck.SequenceEqual(shuffle));
+
+Console.WriteLine(times);
