@@ -7,9 +7,10 @@ using Faro_Shuffle;
  * <summary>This console program implements the Faro Shuffle technique (shuffling cards)</summary>
  */
 
-var startingDeck = from s in Suits()
-                   from r in Ranks()
-                   select new { Suit = s, Rank = r };
+var startingDeck = (from s in Suits().LogQuery("Suit Generation")
+                   from r in Ranks().LogQuery("Rank Generation")
+                   select new { Suit = s, Rank = r }).LogQuery("Starting Deck")
+                   .ToArray(); // ToArray() or ToList() method in Linq will cache the result, it makes in shuffle much faster
 
 /**
  * <summary>The above code is equivalent to the below code</summary>
@@ -84,10 +85,30 @@ foreach (var card in shuffle)
 var times = 0;
 shuffle = startingDeck;
 do
-{ 
-    top = shuffle.Take(26);
-    bottom = shuffle.Skip(26);
-    shuffle = top.InterLeaveSequenceWith(bottom);
+{
+    /*
+     * Difference between in and out shuffle:
+     * out shuffle: top and bottom cards stay the same on each run
+     * in shuffle: interleave the deck so the first card in the bottom half becomes the first card in the deck
+     *             the last card in the top half becomes the bottom card
+     *
+     */
+
+
+    // Out Shuffle
+    /*
+    top = shuffle.Take(26).LogQuery("Top Half");
+    bottom = shuffle.Skip(26).LogQuery("Bottom Half");
+    shuffle = top.InterLeaveSequenceWith(bottom).LogQuery("Shuffle");
+    */
+
+    // In Shuffle, it is very very slow to run
+    top = shuffle.Skip(26).LogQuery("Top Half");
+    bottom = shuffle.Take(26).LogQuery("Bottom Half");
+    shuffle = top.InterLeaveSequenceWith(bottom)
+        .LogQuery("Shuffle")
+        .ToArray(); // ToArray() or ToList() method in Linq will cache the result, it makes in shuffle much faster
+
     foreach (var card in shuffle) 
     {
         Console.WriteLine(card);

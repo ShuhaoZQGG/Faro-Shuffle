@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO;
 namespace Faro_Shuffle
 {
     public static class Extension
@@ -40,6 +40,23 @@ namespace Faro_Shuffle
             }
 
             return true;
+        }
+
+        public static IEnumerable<T> LogQuery<T>
+            (this IEnumerable<T> sequence, string tag)
+        {
+            string FileName = "debug.log";
+            if (!File.Exists(FileName))
+            {
+                File.Create(FileName);
+            }
+            // File.AppendText creates a new file if the file doesn't exist.
+            using (var writer = File.AppendText("debug.log"))
+            {
+                writer.WriteLine($"Executing Query {tag}");
+            }
+
+            return sequence;
         }
     }
 }
